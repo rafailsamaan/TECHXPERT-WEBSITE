@@ -16,7 +16,7 @@ $("priceSearch").addEventListener("click", () => {
 });
 // Βάλε εδώ το Web App URL που θα πάρεις από το Google Apps Script.
 // Μην βάλεις ποτέ API keys ή μυστικά στοιχεία στο app.js.
-const EMAIL_ENDPOINT = "https://script.google.com/macros/s/AKfycbwbfKG90YcqHvgvH50EgV19Uq6PAMbY18viGfzgwP4s9-VWbtslDE-sumsmZvVAtnKMAA/exec";
+const EMAIL_ENDPOINT = https://script.google.com/macros/s/AKfycbwbfKG90YcqHvgvH50EgV19Uq6PAMbY18viGfzgwP4s9-VWbtslDE-sumsmZvVAtnKMAA/exec;
 
 $("contactForm").addEventListener("submit", async (e) => {
   e.preventDefault();
