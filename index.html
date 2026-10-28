@@ -41,7 +41,9 @@
     <div class="section-heading"><p class="eyebrow">ΓΡΗΓΟΡΗ ΑΝΑΖΗΤΗΣΗ</p><h2>Βρες την τιμή της επισκευής σου</h2><p>Οι τιμές που εμφανίζονται εδώ είναι ενδεικτικά παραδείγματα μέχρι να καταχωριστεί ο δικός σου τιμοκατάλογος.</p></div>
     <div class="price-finder">
       <label>Κατηγορία συσκευής<select id="deviceType"><option value="">Επίλεξε κατηγορία</option><option>Smartphone</option><option>Tablet</option><option>Laptop</option><option>Desktop</option><option>Κονσόλα</option></select></label>
-      <label>Μοντέλο<input id="model" type="text" placeholder="π.χ. iPhone 13, PS5, Dell XPS"></label>
+      <label>Μάρκα<select id="brand" disabled><option value="">Πρώτα επίλεξε κατηγορία</option></select></label>
+      <label>Μοντέλο<select id="model" disabled><option value="">Πρώτα επίλεξε μάρκα</option></select></label>
+      <label id="customModelWrap" hidden>Δεν βρίσκεις το μοντέλο σου;<input id="customModel" type="text" placeholder="Γράψε το μοντέλο της συσκευής"></label>
       <label>Επισκευή<select id="repair"><option value="">Επίλεξε επισκευή</option><option>Αλλαγή οθόνης</option><option>Αλλαγή μπαταρίας</option><option>Θύρα φόρτισης</option><option>Καθαρισμός / συντήρηση</option><option>Διάγνωση βλάβης</option><option>Αναβάθμιση SSD / RAM</option><option>Άλλη επισκευή</option></select></label>
       <button class="button primary" id="priceSearch">Ζήτησε τιμή <span>→</span></button>
       <p class="price-result" id="priceResult" role="status">Επίλεξε συσκευή και επισκευή για να στείλεις αίτημα εκτίμησης.</p>
@@ -68,5 +70,5 @@
   </section>
 </main>
 <footer><a class="brand" href="#home"><span class="brand-mark">X</span><span>TECH<span class="cyan">XPERT</span></span></a><p>WE FIX IT ALL!</p><div><a href="#services">Υπηρεσίες</a><a href="#prices">Τιμές</a><a href="#contact">Επικοινωνία</a></div><small>© <span id="year"></span> TechXpert. Με επιφύλαξη παντός δικαιώματος.</small></footer>
-<script src="app.js"></script>
+<script src="app.js?v=20261028-mobile1" defer></script>
 </body></html>

@@ -13,25 +13,105 @@ document.querySelectorAll("#mainNav a").forEach((a) => {
   });
 });
 
+// Brand and model lists for the repair estimator.
+const catalogue = {
+  Smartphone: {
+    Apple: ["iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16", "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14", "iPhone 13 Pro Max", "iPhone 13 Pro", "iPhone 13", "iPhone 12", "iPhone 11", "Άλλο / δεν εμφανίζεται"],
+    Samsung: ["Galaxy S25 Ultra", "Galaxy S25", "Galaxy S24 Ultra", "Galaxy S24", "Galaxy S23", "Galaxy A56", "Galaxy A55", "Galaxy A35", "Galaxy A25", "Galaxy A15", "Άλλο / δεν εμφανίζεται"],
+    Xiaomi: ["Redmi Note 14 Pro", "Redmi Note 14", "Redmi Note 13 Pro", "Redmi Note 13", "Redmi 13", "Poco X7 Pro", "Poco X6", "Άλλο / δεν εμφανίζεται"],
+    Huawei: ["Pura 70", "P60 Pro", "Nova 12", "P30 Pro", "Άλλο / δεν εμφανίζεται"],
+    Google: ["Pixel 9 Pro", "Pixel 9", "Pixel 8 Pro", "Pixel 8", "Άλλο / δεν εμφανίζεται"],
+    OnePlus: ["OnePlus 13", "OnePlus 12", "Nord 4", "Άλλο / δεν εμφανίζεται"],
+    Motorola: ["Edge 50", "Moto G85", "Moto G54", "Άλλο / δεν εμφανίζεται"],
+    Άλλη: ["Άλλο / δεν εμφανίζεται"]
+  },
+  Tablet: {
+    Apple: ["iPad Pro", "iPad Air", "iPad mini", "iPad (10ης γενιάς)", "Άλλο / δεν εμφανίζεται"],
+    Samsung: ["Galaxy Tab S10", "Galaxy Tab S9", "Galaxy Tab A9", "Άλλο / δεν εμφανίζεται"],
+    Lenovo: ["Tab P12", "Tab M11", "Άλλο / δεν εμφανίζεται"],
+    Xiaomi: ["Pad 7", "Redmi Pad Pro", "Άλλο / δεν εμφανίζεται"],
+    Huawei: ["MatePad 11", "MatePad SE", "Άλλο / δεν εμφανίζεται"],
+    Άλλη: ["Άλλο / δεν εμφανίζεται"]
+  },
+  Laptop: {
+    Apple: ["MacBook Air", "MacBook Pro", "Άλλο / δεν εμφανίζεται"],
+    ASUS: ["Zenbook", "Vivobook", "ROG", "TUF Gaming", "Άλλο / δεν εμφανίζεται"],
+    Acer: ["Aspire", "Swift", "Nitro", "Predator", "Άλλο / δεν εμφανίζεται"],
+    Lenovo: ["ThinkPad", "IdeaPad", "Yoga", "Legion", "Άλλο / δεν εμφανίζεται"],
+    HP: ["Pavilion", "Envy", "Victus", "Omen", "ProBook", "Άλλο / δεν εμφανίζεται"],
+    Dell: ["XPS", "Inspiron", "Latitude", "G Series", "Άλλο / δεν εμφανίζεται"],
+    MSI: ["Modern", "Katana", "Thin", "Raider", "Άλλο / δεν εμφανίζεται"],
+    Microsoft: ["Surface Laptop", "Surface Pro", "Άλλο / δεν εμφανίζεται"],
+    Άλλη: ["Άλλο / δεν εμφανίζεται"]
+  },
+  Desktop: {
+    Custom: ["Συναρμολογημένος υπολογιστής", "Άλλο / δεν εμφανίζεται"],
+    ASUS: ["Desktop PC", "Άλλο / δεν εμφανίζεται"],
+    HP: ["Pavilion Desktop", "ProDesk", "Άλλο / δεν εμφανίζεται"],
+    Dell: ["OptiPlex", "XPS Desktop", "Άλλο / δεν εμφανίζεται"],
+    Lenovo: ["ThinkCentre", "IdeaCentre", "Άλλο / δεν εμφανίζεται"],
+    Άλλη: ["Άλλο / δεν εμφανίζεται"]
+  },
+  Κονσόλα: {
+    Sony: ["PlayStation 5", "PlayStation 5 Slim", "PlayStation 4 Pro", "PlayStation 4", "Άλλο / δεν εμφανίζεται"],
+    Microsoft: ["Xbox Series X", "Xbox Series S", "Xbox One X", "Xbox One S", "Άλλο / δεν εμφανίζεται"],
+    Nintendo: ["Nintendo Switch OLED", "Nintendo Switch", "Nintendo Switch Lite", "Άλλο / δεν εμφανίζεται"],
+    Άλλη: ["Άλλο / δεν εμφανίζεται"]
+  }
+};
+
+function fillSelect(select, placeholder, values) {
+  select.replaceChildren(new Option(placeholder, ""));
+  values.forEach(value => select.add(new Option(value, value)));
+}
+
+const typeSelect = $("deviceType");
+const brandSelect = $("brand");
+const modelSelect = $("model");
+const customModelWrap = $("customModelWrap");
+const customModel = $("customModel");
+
+ typeSelect.addEventListener("change", () => {
+  const brands = Object.keys(catalogue[typeSelect.value] || {});
+  fillSelect(brandSelect, brands.length ? "Επίλεξε μάρκα" : "Πρώτα επίλεξε κατηγορία", brands);
+  brandSelect.disabled = !brands.length;
+  fillSelect(modelSelect, "Πρώτα επίλεξε μάρκα", []);
+  modelSelect.disabled = true;
+  customModelWrap.hidden = true;
+  customModel.value = "";
+});
+
+brandSelect.addEventListener("change", () => {
+  const models = (catalogue[typeSelect.value] || {})[brandSelect.value] || [];
+  fillSelect(modelSelect, "Επίλεξε μοντέλο", models);
+  modelSelect.disabled = !models.length;
+  customModelWrap.hidden = true;
+  customModel.value = "";
+});
+
+modelSelect.addEventListener("change", () => {
+  const isOther = modelSelect.value === "Άλλο / δεν εμφανίζεται";
+  customModelWrap.hidden = !isOther;
+  customModel.required = isOther;
+  if (!isOther) customModel.value = "";
+});
+
 $("priceSearch").addEventListener("click", () => {
-  const type = $("deviceType").value;
-  const model = $("model").value.trim();
+  const type = typeSelect.value;
+  const brand = brandSelect.value;
+  const selectedModel = modelSelect.value;
+  const model = selectedModel === "Άλλο / δεν εμφανίζεται" ? customModel.value.trim() : selectedModel;
   const repair = $("repair").value;
 
-  if (!type || !model || !repair) {
-    $("priceResult").textContent =
-      "Συμπλήρωσε κατηγορία, μοντέλο και επισκευή για να ζητήσεις εκτίμηση.";
+  if (!type || !brand || !selectedModel || !model || !repair) {
+    $("priceResult").textContent = "Επίλεξε κατηγορία, μάρκα, μοντέλο και επισκευή για να ζητήσεις εκτίμηση.";
     return;
   }
 
-  $("priceResult").textContent =
-    `Για ${type} ${model} — ${repair}: δεν έχει καταχωριστεί ακόμη τιμή. Στείλε αίτημα για εκτίμηση.`;
-
+  $("priceResult").textContent = `Για ${brand} ${model} (${type}) — ${repair}: δεν έχει καταχωριστεί ακόμη τιμή. Στείλε αίτημα για εκτίμηση.`;
   const form = $("contactForm");
-  form.elements.namedItem("details").value =
-    `Μοντέλο: ${model}\nΕπισκευή: ${repair}`;
+  form.elements.namedItem("details").value = `Μάρκα: ${brand}\nΜοντέλο: ${model}\nΕπισκευή: ${repair}`;
   form.elements.namedItem("device").value = type;
-
   location.hash = "contact";
 });
 
