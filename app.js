@@ -38,7 +38,19 @@ $("priceSearch").addEventListener("click", () => {
 const EMAIL_ENDPOINT =
   "https://script.google.com/macros/s/AKfycbyuswjFC21E378sA36DZ_vnu4j9RCRM6k2iy41r2k6iEFe4WDO3kI3vZVjUUeSKODNMHA/exec";
 
-$("contactForm").addEventListener("submit", async (e) => {
+// Apps Script receives regular form fields through e.parameter.
+// A hidden iframe lets the browser submit cross-origin without fetch/CORS.
+let techxpertFrame = document.getElementById("techxpertSubmitFrame");
+if (!techxpertFrame) {
+  techxpertFrame = document.createElement("iframe");
+  techxpertFrame.name = "techxpertSubmitFrame";
+  techxpertFrame.id = "techxpertSubmitFrame";
+  techxpertFrame.hidden = true;
+  techxpertFrame.setAttribute("aria-hidden", "true");
+  document.body.appendChild(techxpertFrame);
+}
+
+$("contactForm").addEventListener("submit", (e) => {
   e.preventDefault();
 
   const form = e.currentTarget;
@@ -47,7 +59,6 @@ $("contactForm").addEventListener("submit", async (e) => {
   const note = $("formNote");
   const button = form.querySelector('button[type="submit"]');
   const originalText = button.textContent;
-
   const payload = {
     name: form.elements.namedItem("name").value.trim(),
     reply: form.elements.namedItem("reply").value.trim(),
@@ -56,8 +67,7 @@ $("contactForm").addEventListener("submit", async (e) => {
     source: "TechXpert website"
   };
 
-  if (!payload.name || !payload.reply ||
-      !payload.device || !payload.details) {
+  if (!payload.name || !payload.reply || !payload.device || !payload.details) {
     note.textContent = "Συμπλήρωσε όλα τα απαραίτητα πεδία.";
     note.setAttribute("role", "alert");
     return;
@@ -65,31 +75,36 @@ $("contactForm").addEventListener("submit", async (e) => {
 
   button.disabled = true;
   button.textContent = "Αποστολή…";
-  note.textContent = "Γίνεται υποβολή του αιτήματος…";
+  note.textContent = "Γίνεται αποστολή του αιτήματος…";
   note.setAttribute("role", "status");
 
-  try {
-    await fetch(EMAIL_ENDPOINT, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain;charset=UTF-8"
-      },
-      body: JSON.stringify(payload)
-    });
+  // Build a normal POST form so Apps Script receives e.parameter fields.
+  const postForm = document.createElement("form");
+  postForm.method = "POST";
+  postForm.action = EMAIL_ENDPOINT;
+  postForm.target = "techxpertSubmitFrame";
+  postForm.acceptCharset = "UTF-8";
+  postForm.style.display = "none";
 
-    note.textContent =
-      "Το αίτημα υποβλήθηκε προς επεξεργασία. Η παράδοση του email δεν έχει επιβεβαιωθεί ακόμη.";
-    form.reset();
-  } catch (error) {
-    console.error("TechXpert submission error:", error);
-    note.textContent =
-      "Δεν ήταν δυνατή η υποβολή. Δοκίμασε ξανά ή κάλεσε το 698 136 5735.";
-    note.setAttribute("role", "alert");
-  } finally {
+  Object.entries(payload).forEach(([name, value]) => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    postForm.appendChild(input);
+  });
+
+  document.body.appendChild(postForm);
+  postForm.submit();
+  postForm.remove();
+
+  note.textContent =
+    "Το αίτημα στάλθηκε για επεξεργασία. Η παράδοση του email δεν επιβεβαιώνεται από τη σελίδα. Αν δεν υπάρξει επικοινωνία, κάλεσε στο 698 136 5735.";
+  // Keep the user's entries visible in case they need to retry or call.
+  window.setTimeout(() => {
     button.disabled = false;
     button.textContent = originalText;
-  }
+  }, 3000);
 });
 
 document.querySelectorAll(".contact-placeholder").forEach((a) => {
