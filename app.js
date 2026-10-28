@@ -23,12 +23,15 @@ $("contactForm").addEventListener("submit", async (e) => {
   const form = e.currentTarget;
   if (!form.reportValidity()) return;
 
-  if (!EMAIL_ENDPOINT.startsWith("https://script.google.com/macros/s/") || EMAIL_ENDPOINT.includes("https://script.google.com/macros/s/AKfycbwbfKG90YcqHvgvH50EgV19Uq6PAMbY18viGfzgwP4s9-VWbtslDE-sumsmZvVAtnKMAA/exec")) {
-    const note = $("formNote");
-    note.textContent = "Η φόρμα δεν έχει συνδεθεί ακόμη. Χρειάζεται πρώτα να ρυθμιστεί το Google Apps Script και να προστεθεί το URL του στο app.js.";
-    note.setAttribute("role", "alert");
-    return;
-  }
+ if (
+  !EMAIL_ENDPOINT.startsWith("https://script.google.com/macros/s/") ||
+  EMAIL_ENDPOINT.endsWith("/YOUR_DEPLOYMENT_ID/exec")
+) {
+  const note = $("formNote");
+  note.textContent = "Η φόρμα δεν έχει συνδεθεί ακόμη. Έλεγξε τη ρύθμιση του Google Apps Script.";
+  note.setAttribute("role", "alert");
+  return;
+}
 
   const data = new FormData(form);
   const params = new URLSearchParams();
