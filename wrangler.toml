@@ -10,4 +10,4 @@ run_worker_first = ["/api/*"]
 [[d1_databases]]
 binding = "DB"
 database_name = "techxpert-prices"
-database_id = "PASTE_D1_DATABASE_ID_HERE"
+database_id = "a62195fe-f88c-4c11-ada7-460700568d5a"
