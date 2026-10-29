@@ -14,7 +14,6 @@ export default {
        catch (e) { return json({ ok:false, error:'database_not_ready' }, 503); }
      }
      if (url.pathname.startsWith('/api/admin/')) {
-       if (!isAdmin(request, env)) return json({ ok:false, error:'unauthorized' }, 401);
        if (url.pathname === '/api/admin/prices' && request.method === 'GET') {
          try { const { results=[] } = await env.DB.prepare('SELECT id, device_type, brand, model, repair, price_cents, note, active FROM prices ORDER BY device_type, brand, model, repair').all(); return json({ok:true,prices:results.map(priceObject)}); }
          catch(e) { return json({ok:false,error:'database_not_ready'},503); }
