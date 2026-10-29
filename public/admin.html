@@ -35,5 +35,6 @@ function resetForm(){$('priceForm').reset();$('rowId').value='';$('formTitle').t
 async function deletePrice(id){if(!confirm('Να διαγραφεί αυτή η τιμή;'))return;try{await api('/api/admin/prices/'+id,{method:'DELETE'});status('formStatus','Η τιμή διαγράφηκε.');await refreshRows()}catch(e){status('formStatus','Σφάλμα: '+e.message,true)}}
 $('login').onclick=login;$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('refresh').onclick=refreshRows;$('reset').onclick=resetForm;$('logout').onclick=()=>{password='';sessionStorage.removeItem('txAdminPassword');$('app').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('password').value=''};
 $('priceForm').addEventListener('submit',async e=>{e.preventDefault();const payload={id:$('rowId').value||null,deviceType:$('deviceType').value,brand:$('brand').value.trim(),model:$('model').value.trim(),repair:$('repair').value,price:Number($('price').value),note:$('note').value.trim(),active:$('active').value==='true'};try{await api('/api/admin/prices',{method:'POST',body:JSON.stringify(payload)});status('formStatus','Η τιμή αποθηκεύτηκε. Θα εμφανιστεί αυτόματα στον τιμοκατάλογο εφόσον είναι ενεργή.');resetForm();await refreshRows()}catch(e){status('formStatus','Δεν αποθηκεύτηκε: '+e.message,true)}});
-if(password){$('password').value=password;login()}
+showApp();
+refreshRows();
 </script></body></html>
